@@ -9,11 +9,12 @@ import (
 type LogType int
 
 const (
-	LogBegin  LogType = 1
-	LogUpdate LogType = 2
-	LogDelete LogType = 3
-	LogCommit LogType = 4
-	LogAbort  LogType = 5
+	LogBegin   LogType = 1
+	LogUpdate  LogType = 2
+	LogDelete  LogType = 3
+	LogCommit  LogType = 4
+	LogAbort   LogType = 5
+	LogPersist LogType = 5
 )
 
 // LogEntry represents a log entry

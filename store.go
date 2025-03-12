@@ -33,3 +33,7 @@ func (s *Store) GetMaxTxnId() uint64 {
 func (s *Store) SetMaxTxnId(id uint64) {
 	s.maxTxnId = id
 }
+
+func (s *Store) Snapshot() map[string]string {
+	return s.data
+}
