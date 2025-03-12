@@ -90,3 +90,7 @@ func (db *DB) Get(key string) (string, bool) {
 	defer db.mu.Unlock()
 	return db.store.Get(key)
 }
+
+func (db *DB) Persist() error {
+	return nil
+}
