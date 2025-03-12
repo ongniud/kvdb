@@ -1,34 +1,35 @@
-package main
+package kvdb
 
-import (
-	"fmt"
-)
-
-// DataStore represents the data store
-type DataStore struct {
-	data map[string]string
+// Store represents the data store
+type Store struct {
+	maxTxnId uint64
+	data     map[string]string
 }
 
-func NewDataStore() *DataStore {
-	return &DataStore{
+func NewStore() *Store {
+	return &Store{
 		data: make(map[string]string),
 	}
 }
 
-// Apply applies an operation to the data store
-func (ds *DataStore) Apply(key, value string) {
-	ds.data[key] = value
+// Put  ...
+func (s *Store) Put(key, value string) {
+	s.data[key] = value
 }
 
-// Rollback rolls back an operation in the data store
-func (ds *DataStore) Rollback(key string) {
-	delete(ds.data, key)
+// Delete ...
+func (s *Store) Delete(key string) {
+	delete(s.data, key)
 }
 
-// Print prints the current state of the data store
-func (ds *DataStore) Print() {
-	fmt.Println("DataStore Contents:")
-	for key, value := range ds.data {
-		fmt.Printf("%s: %s\n", key, value)
-	}
+func (s *Store) Get(key string) (string, bool) {
+	value, exists := s.data[key]
+	return value, exists
+}
+
+func (s *Store) GetMaxTxnId() uint64 {
+	return s.maxTxnId
+}
+func (s *Store) SetMaxTxnId(id uint64) {
+	s.maxTxnId = id
 }
