@@ -24,11 +24,6 @@ func TestDB(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	// 测试 Get 方法
-	value, found := db.Get("foo")
-	require.True(t, found)
-	require.Equal(t, "bar", value)
-
 	// 测试 View 方法（只读事务）
 	err = db.View(func(tx *Transaction) error {
 		v, found := tx.Get("foo")
@@ -47,7 +42,6 @@ func TestDB(t *testing.T) {
 	})
 	require.Error(t, err)
 
-	_, found = db.Get("baz")
 	db.Update(func(tx *Transaction) error {
 		return nil
 	})
@@ -63,5 +57,4 @@ func TestDB(t *testing.T) {
 	db.Update(func(tx *Transaction) error {
 		return nil
 	})
-	require.False(t, found) // 确保数据未提交
 }

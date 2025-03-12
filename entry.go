@@ -2,6 +2,7 @@ package kvdb
 
 import (
 	"encoding/json"
+	"errors"
 )
 
 // LogType represents the type of log entry
@@ -24,11 +25,20 @@ type LogEntry struct {
 	Timestamp int64   // Transaction operation time
 }
 
-// ParseLogEntry parses a log entry from a string
-func (le *LogEntry) ParseLogEntry(line string) error {
-	err := json.Unmarshal([]byte(line), le)
-	if err != nil {
+// Decode parses a log entry from a string
+func (e *LogEntry) Decode(data []byte) error {
+	if e == nil {
+		return errors.New("entry is nil")
+	}
+	if err := json.Unmarshal(data, e); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (e *LogEntry) Encode() ([]byte, error) {
+	if e == nil {
+		return nil, errors.New("entry is nil")
+	}
+	return json.Marshal(e)
 }

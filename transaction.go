@@ -1,7 +1,6 @@
 package kvdb
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"sync"
@@ -151,7 +150,7 @@ func (tx *Transaction) Abort() error {
 
 // Helper method to write log entries
 func (tx *Transaction) writeLog(entry *LogEntry) error {
-	data, err := json.Marshal(entry)
+	data, err := entry.Encode()
 	if err != nil {
 		return err
 	}

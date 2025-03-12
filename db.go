@@ -2,22 +2,18 @@ package kvdb
 
 import (
 	"fmt"
-	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/ongniud/wal"
 )
 
-// DB 封装 DataStore 并屏蔽事务细节
 type DB struct {
 	wal   *wal.WAL
 	store *Store
 	txId  uint64
-	mu    sync.Mutex
 }
 
-// NewDB 创建一个新的 DB 实例
 func NewDB(dir string) (*DB, error) {
 	wlg, err := wal.Open(wal.Options{
 		Directory:    dir,
@@ -46,16 +42,12 @@ func NewDB(dir string) (*DB, error) {
 	}, nil
 }
 
-func (db *DB) GetTxnId() uint64 {
-	a := atomic.AddUint64(&db.txId, 1)
-	return a
+func (db *DB) getTxnId() uint64 {
+	return atomic.AddUint64(&db.txId, 1)
 }
 
-// Update 提供可写事务，事务提交或回滚由 DB 自动处理
 func (db *DB) Update(fn func(tx *Transaction) error) error {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-	txn, err := NewTransaction(db.GetTxnId(), db.wal, db.store)
+	txn, err := NewTransaction(db.getTxnId(), db.wal, db.store)
 	if err != nil {
 		return err
 	}
@@ -71,24 +63,13 @@ func (db *DB) Update(fn func(tx *Transaction) error) error {
 	return txn.Commit()
 }
 
-// View 提供只读事务
 func (db *DB) View(fn func(tx *Transaction) error) error {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-	txn, err := NewTransaction(db.GetTxnId(), db.wal, db.store)
+	txn, err := NewTransaction(db.getTxnId(), db.wal, db.store)
 	if err != nil {
 		return err
 	}
-	// 事务默认是 Active，但不允许修改数据
 	txn.state = TxnCommitted
 	return fn(txn)
-}
-
-// Get 直接从 DataStore 读取数据（非事务性）
-func (db *DB) Get(key string) (string, bool) {
-	db.mu.Lock()
-	defer db.mu.Unlock()
-	return db.store.Get(key)
 }
 
 func (db *DB) Persist() error {

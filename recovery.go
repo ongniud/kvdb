@@ -1,7 +1,6 @@
 package kvdb
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -40,13 +39,12 @@ func (rm *Recovery) recover(pos *wal.Position, fn func(entry *LogEntry) error) e
 			panic(err)
 			return err
 		}
-		entry, err := parseLogEntry(data)
-		if err != nil {
-			panic(err)
+
+		entry := &LogEntry{}
+		if err := entry.Decode(data); err != nil {
 			return err
 		}
 		if err := fn(entry); err != nil {
-			panic(err)
 			return err
 		}
 	}
@@ -127,13 +125,4 @@ func (rm *Recovery) Recover(pos *wal.Position) error {
 
 func (rm *Recovery) Close() error {
 	return nil
-}
-
-func parseLogEntry(data []byte) (*LogEntry, error) {
-	var entry LogEntry
-	err := json.Unmarshal(data, &entry)
-	if err != nil {
-		return nil, err
-	}
-	return &entry, nil
 }
