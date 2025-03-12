@@ -36,7 +36,6 @@ func (rm *Recovery) recover(pos *wal.Position, fn func(entry *LogEntry) error) e
 			if errors.Is(err, io.EOF) {
 				break
 			}
-			panic(err)
 			return err
 		}
 
