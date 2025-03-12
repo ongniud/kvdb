@@ -115,14 +115,14 @@ func (tx *Transaction) Commit() error {
 	if tx.state != TxnActive {
 		return errors.New("transaction already committed or aborted")
 	}
-	// 先写 WAL，确保日志持久化
+	// first
 	if err := tx.writeLog(&LogEntry{TxID: tx.ID, Type: LogCommit}); err != nil {
 		return err
 	}
 	if err := tx.wal.Sync(); err != nil {
 		return err
 	}
-	// 确保 WAL 持久化后再修改 store
+	// second
 	for _, entry := range tx.entries {
 		if entry.Type == LogUpdate {
 			tx.store.Put(entry.Key, entry.Value)

@@ -17,14 +17,12 @@ func TestDB(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, db)
 
-	// 测试 Update 方法（写入数据）
 	err = db.Update(func(tx *Transaction) error {
 		tx.Put("foo", "bar")
 		return nil
 	})
 	require.NoError(t, err)
 
-	// 测试 View 方法（只读事务）
 	err = db.View(func(tx *Transaction) error {
 		v, found := tx.Get("foo")
 		require.True(t, found)
@@ -33,12 +31,11 @@ func TestDB(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	// 测试事务回滚
 	err = db.Update(func(tx *Transaction) error {
 		if err := tx.Put("baz", "qux"); err != nil {
 			fmt.Println(err)
 		}
-		return assert.AnError // 触发回滚
+		return assert.AnError
 	})
 	require.Error(t, err)
 
