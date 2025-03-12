@@ -1,7 +1,6 @@
 package kvdb
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -33,7 +32,6 @@ func TestDB(t *testing.T) {
 
 	err = db.Update(func(tx *Transaction) error {
 		if err := tx.Put("baz", "qux"); err != nil {
-			fmt.Println(err)
 		}
 		return assert.AnError
 	})

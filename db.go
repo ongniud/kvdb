@@ -25,17 +25,14 @@ func NewDB(dir string) (*DB, error) {
 		SyncInterval: 1 * time.Second,
 	})
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	store := NewStore()
 	recovery, err := NewRecovery(store, wlg)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	if err := recovery.Recover(&wal.Position{}); err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	txId := store.GetMaxTxnId()

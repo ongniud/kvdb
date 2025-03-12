@@ -2,7 +2,6 @@ package kvdb
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"log"
 
@@ -54,11 +53,7 @@ func (rm *Recovery) recover(pos *wal.Position, fn func(entry *LogEntry) error) e
 func (rm *Recovery) Recover(pos *wal.Position) error {
 	txLogs := make(map[uint64][]*LogEntry) // Stores transaction logs
 	txStates := make(map[uint64]TxnState)  // Tracks transaction states
-
 	if err := rm.recover(pos, func(entry *LogEntry) error {
-		fmt.Println("entry:", entry)
-		//return nil
-
 		txID := entry.TxID
 		rm.store.SetMaxTxnId(txID)
 		// Ensure a valid state transition

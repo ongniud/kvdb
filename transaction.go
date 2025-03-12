@@ -2,7 +2,6 @@ package kvdb
 
 import (
 	"errors"
-	"fmt"
 	"sync"
 
 	"github.com/ongniud/wal"
@@ -155,6 +154,5 @@ func (tx *Transaction) writeLog(entry *LogEntry) error {
 		return err
 	}
 	_, err = tx.wal.Write(data)
-	fmt.Println("writeLog:", string(data))
 	return err
 }
