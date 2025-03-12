@@ -3,7 +3,7 @@ module github.com/ongniud/kvdb
 go 1.22.3
 
 require (
-	github.com/ongniud/wal v0.0.0-20250312040917-ebbed4086b1c
+	github.com/ongniud/wal v0.0.0-20250312093616-279b1d510ab3
 	github.com/stretchr/testify v1.10.0
 )
 
